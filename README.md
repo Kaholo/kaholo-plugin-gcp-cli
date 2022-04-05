@@ -1,2 +1,2 @@
-# kaholo-plugin-template
-A template repository for Kaholo plugins.
+# kaholo-plugin-gcp-cli
+Plugin to run GCP CLI commands from isolated Docker container.
