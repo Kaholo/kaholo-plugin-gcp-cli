@@ -1,0 +1,75 @@
+{
+  "name": "gcp-cli",
+  "type": "executer",
+  "imgUrl": "logo.png",
+  "execProgram": "node",
+  "main": "app.js",
+  "version": "0.1.0",
+  "description": "Kaholo plugin GCP CLI",
+  "category": "GCP",
+  "keywords": ["GCP", "compute", "google", "platform", "vm", "instance", "cloud", "cluster", "project", "infra", "infrastructure", "cli", "network", "subnetwork", "firewall", "IP", "route"],
+  "settings": [
+    {
+      "name": "credentials",
+      "viewName": "Service Account Credentials",
+      "type": "vault",
+      "description": "Default service account credentials",
+      "learnUrl": "https://cloud.google.com/docs/authentication/production"
+    },
+    {
+      "name": "project",
+      "viewName": "Default Project ID",
+      "type": "string",
+      "description": "The ID of the default project to send requests to.",
+      "placeholder": "my-project-123456",
+      "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
+    },
+    {
+      "name": "zone",
+      "viewName": "Default Zone",
+      "type": "string",
+      "description": "The default region to send requests to.",
+      "placeholder": "us-central1",
+      "learnUrl": "https://cloud.google.com/compute/docs/regions-zones"
+    }
+  ],
+  "methods": [
+    {
+      "name": "runCommand",
+      "viewName": "Run Command",
+      "params": [
+        {
+          "name": "credentials",
+          "viewName": "Service Account Credentials",
+          "type": "vault",
+          "description": "Default service account credentials",
+          "learnUrl": "https://cloud.google.com/docs/authentication/production"
+        },
+        {
+          "name": "project",
+          "viewName": "Project",
+          "type": "string",
+          "description": "ID of the project that the command should refer to.",
+          "placeholder": "my-project-123456",
+          "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
+        },
+        {
+          "name": "zone",
+          "viewName": "Zone",
+          "type": "string",
+          "description": "Zone to send requests to.",
+          "placeholder": "us-central1",
+          "learnUrl": "https://cloud.google.com/compute/docs/regions-zones"
+        },
+        {
+          "name": "command",
+          "viewName": "Command",
+          "type": "string",
+          "description": "GCP CLI command to run",
+          "placeholder": "gcloud projects list",
+          "learnUrl": "https://cloud.google.com/sdk/gcloud/reference/topic/gcloud"
+        }
+      ]
+    }
+  ]
+}
