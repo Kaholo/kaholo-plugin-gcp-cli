@@ -18,7 +18,7 @@ async function runCommand(parameters) {
     );
     return result.stdout;
   } catch (error) {
-    return Promise.reject(error.stderr ?? error);
+    throw new Error(error.stderr ?? error);
   }
 }
 
