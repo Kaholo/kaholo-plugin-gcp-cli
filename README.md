@@ -1,7 +1,7 @@
 # Kaholo Gcloud CLI Plugin
 This plugin runs commands using the [Google Cloud CLI (gcloud)](https://cloud.google.com/sdk/gcloud). The gcloud CLI is capable of a very broad range of operations on the Google Cloud Platform (GCP).
 
-Kaholo provides specific plugins to work with GCP in a more user-friendly way, for example Cloud Comput, Cloud Storage, and Google Kubernetes Engine (GKE). It is recommended to use the specific plugin if one is available, and resort to the gcloud CLI plugin only if you are familiar and comfortable using the gcloud CLI, migrating automation that is already written in gcloud CLI, or if the specific plugins are lacking features to meet your needs.
+Kaholo provides specific plugins to work with GCP in a more user-friendly way, for example Cloud Compute, Cloud Storage, and Google Kubernetes Engine (GKE). It is recommended to use the specific plugin if one is available, and resort to the gcloud CLI plugin only if you are familiar and comfortable using the gcloud CLI, migrating automation that is already written in gcloud CLI, or if the specific plugins are lacking features to meet your needs.
 
 Gcloud CLI commands are easily recognizable because they all begin with `gcloud`. Some examples include:
 
