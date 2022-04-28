@@ -24,14 +24,6 @@
       "description": "GCP project ID to use by default",
       "placeholder": "my-project-123456",
       "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
-    },
-    {
-      "name": "workingDirectory",
-      "viewName": "Working Directory",
-      "type": "string",
-      "description": "Location (on agent) of any input files used in commands",
-      "placeholder": "/home/gcloud",
-      "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
     }
   ],
   "methods": [
