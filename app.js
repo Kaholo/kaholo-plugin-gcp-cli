@@ -3,9 +3,6 @@ const gcpCli = require("./gcpcli");
 
 async function runCommand(parameters) {
   let additionalFlags = "--format=json ";
-  if (parameters.zone) {
-    additionalFlags += `--zone=${parameters.zone} `;
-  }
   if (parameters.project) {
     additionalFlags += `--project=${parameters.project} `;
   }
