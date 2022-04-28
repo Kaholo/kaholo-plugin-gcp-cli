@@ -1,36 +1,29 @@
 {
   "name": "gcp-cli",
+  "viewName": "GCP CLI",
   "type": "executer",
   "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "0.1.0",
-  "description": "Kaholo plugin GCP CLI",
+  "version": "0.1.1",
+  "description": "Kaholo plugin GCP CLI (gcloud)",
   "category": "GCP",
-  "keywords": ["GCP", "compute", "google", "platform", "vm", "instance", "cloud", "cluster", "project", "infra", "infrastructure", "cli", "network", "subnetwork", "firewall", "IP", "route"],
+  "keywords": ["GCP", "compute", "google", "platform", "vm", "instance", "cloud", "cluster", "project", "infra", "infrastructure", "cli", "network", "subnetwork", "firewall", "IP", "route", "gcloud"],
   "settings": [
     {
       "name": "credentials",
-      "viewName": "Service Account Credentials",
+      "viewName": "Default Service Account Credentials",
       "type": "vault",
-      "description": "Default service account credentials",
+      "description": "GCP service account credentials (JSON) to use by default",
       "learnUrl": "https://cloud.google.com/docs/authentication/production"
     },
     {
       "name": "project",
       "viewName": "Default Project ID",
       "type": "string",
-      "description": "The ID of the default project to send requests to.",
+      "description": "GCP project ID to use by default",
       "placeholder": "my-project-123456",
       "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
-    },
-    {
-      "name": "zone",
-      "viewName": "Default Zone",
-      "type": "string",
-      "description": "The default region to send requests to.",
-      "placeholder": "us-central1",
-      "learnUrl": "https://cloud.google.com/compute/docs/regions-zones"
     }
   ],
   "methods": [
@@ -52,14 +45,6 @@
           "description": "ID of the project that the command should refer to.",
           "placeholder": "my-project-123456",
           "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
-        },
-        {
-          "name": "zone",
-          "viewName": "Zone",
-          "type": "string",
-          "description": "Zone to send requests to.",
-          "placeholder": "us-central1",
-          "learnUrl": "https://cloud.google.com/compute/docs/regions-zones"
         },
         {
           "name": "command",
