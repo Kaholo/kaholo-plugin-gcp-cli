@@ -1,49 +1,66 @@
-const _ = require("lodash");
 const util = require("util");
 const childProcess = require("child_process");
+const { docker } = require("@kaholo/plugin-library");
+const { assertPathExistence } = require("./helpers");
 
 const exec = util.promisify(childProcess.exec);
 
+const DOCKER_COMMAND = "bash -c \"$AUTH_COMMAND && $SANITIZED_COMMAND\"";
+const DOCKER_IMAGE = "google/cloud-sdk";
 // eslint-disable-next-line no-multi-str
-const GCP_AUTH_COMMAND = "\
-export AUTH_FILE=$(mktemp) && \
-mv $AUTH_FILE $AUTH_FILE.json && \
-echo $GCP_CREDENTIALS > $AUTH_FILE.json && \
-gcloud auth activate-service-account --key-file=$AUTH_FILE.json; \
-rm $AUTH_FILE.json && \
+const AUTH_COMMAND = "\
+export AUTH_FILE=$(mktemp) &&\
+mv $AUTH_FILE $AUTH_FILE.json &&\
+echo $GCP_CREDENTIALS > $AUTH_FILE.json &&\
+gcloud auth activate-service-account --key-file=$AUTH_FILE.json;\
+rm $AUTH_FILE.json &&\
 unset AUTH_FILE";
 
-// eslint-disable-next-line no-multi-str
-const DOCKER_GCP_CLI_COMMAND = "\
-docker run \
--e GCP_CREDENTIALS \
--e GCP_AUTH_COMMAND \
--e SANITIZED_COMMAND \
---rm google/cloud-sdk bash -c \"$GCP_AUTH_COMMAND && gcloud $SANITIZED_COMMAND\"";
-
-function sanitizeCommand(command, additionalFlags) {
-  let sanitized = command;
-  if (_.startsWith(command.toLowerCase(), "gcloud ")) {
-    sanitized = command.slice(7);
+async function execute({
+  credentials,
+  command,
+  workingDirectory,
+  cliTool,
+  additionalFlags = "",
+}) {
+  const volumeConfigs = [];
+  let workingDirectoryVolumeConfig;
+  if (workingDirectory) {
+    await assertPathExistence(workingDirectory);
+    workingDirectoryVolumeConfig = docker.createVolumeConfig(workingDirectory);
+    volumeConfigs.push(workingDirectoryVolumeConfig);
   }
 
-  // This is the safest way to escape the user provided command.
-  // By putting the command in double quotes, we can be sure that
-  // every character within the command is escaped, including the
-  // ones that could be used for shell injection (e.g. ';', '|', etc.).
-  // The escaped string needs then to be echoed back to the docker command
-  // in order to be properly executed - simply passing the command in double quotes
-  // would result in docker confusing the quotes as a part of the command.
-  return `$(echo "${sanitized} ${additionalFlags}")`;
-}
+  const {
+    environmentVariablesRequiredByDocker,
+    environmentVariablesRequiredByShell,
+  } = docker.extractEnvironmentVariablesFromVolumeConfigs(volumeConfigs);
 
-function execute(credentials, command, additionalFlags = "") {
-  const cmdToExecute = `${DOCKER_GCP_CLI_COMMAND}`;
-  return exec(cmdToExecute, {
+  const environmentVariables = [
+    "GCP_CREDENTIALS",
+    "AUTH_COMMAND",
+    "SANITIZED_COMMAND",
+    ...Object.keys(environmentVariablesRequiredByDocker),
+  ];
+  const dockerCommandBuildOptions = {
+    command: DOCKER_COMMAND,
+    image: DOCKER_IMAGE,
+    environmentVariables,
+    volumeConfigs,
+  };
+  if (workingDirectoryVolumeConfig) {
+    dockerCommandBuildOptions.workingDirectory = workingDirectoryVolumeConfig.mountPoint.value;
+  }
+
+  const gcloudCommand = `${command} ${additionalFlags}`;
+  const dockerCommand = docker.buildDockerCommand(dockerCommandBuildOptions);
+
+  return exec(dockerCommand, {
     env: {
+      AUTH_COMMAND,
       GCP_CREDENTIALS: credentials,
-      GCP_AUTH_COMMAND,
-      SANITIZED_COMMAND: sanitizeCommand(command, additionalFlags),
+      SANITIZED_COMMAND: docker.sanitizeCommand(gcloudCommand, cliTool),
+      ...environmentVariablesRequiredByShell,
     },
   });
 }

@@ -5,7 +5,7 @@
   "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Kaholo plugin GCP CLI (gcloud)",
   "category": "GCP",
   "keywords": ["GCP", "compute", "google", "platform", "vm", "instance", "cloud", "cluster", "project", "infra", "infrastructure", "cli", "network", "subnetwork", "firewall", "IP", "route", "gcloud"],
@@ -29,7 +29,7 @@
   "methods": [
     {
       "name": "runCommand",
-      "viewName": "Run Command",
+      "viewName": "Run gcloud Command",
       "params": [
         {
           "name": "credentials",
@@ -47,10 +47,57 @@
           "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
         },
         {
+          "name": "workingDirectory",
+          "viewName": "Working Directory",
+          "type": "string",
+          "required": false,
+          "description": "Location (on agent) of any input/output files used in commands",
+          "placeholder": "/home/gcloud",
+          "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
+        },
+        {
           "name": "command",
           "viewName": "Command",
           "type": "string",
           "description": "GCP CLI command to run",
+          "placeholder": "gcloud projects list",
+          "learnUrl": "https://cloud.google.com/sdk/gcloud/reference/topic/gcloud"
+        }
+      ]
+    },
+    {
+      "name": "runGsutilCommand",
+      "viewName": "Run gsutil Command",
+      "params": [
+        {
+          "name": "credentials",
+          "viewName": "Service Account Credentials",
+          "type": "vault",
+          "description": "Default service account credentials",
+          "learnUrl": "https://cloud.google.com/docs/authentication/production"
+        },
+        {
+          "name": "project",
+          "viewName": "Project",
+          "type": "string",
+          "description": "ID of the project that the command should refer to.",
+          "placeholder": "my-project-123456",
+          "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
+        },
+        {
+          "name": "workingDirectory",
+          "viewName": "Working Directory",
+          "type": "string",
+          "required": false,
+          "description": "Location (on agent) of any input/output files used in commands",
+          "placeholder": "/home/gcloud",
+          "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
+        },
+        {
+          "name": "command",
+          "viewName": "Command",
+          "type": "string",
+          "description": "Gsutil command to run",
           "placeholder": "gcloud projects list",
           "learnUrl": "https://cloud.google.com/sdk/gcloud/reference/topic/gcloud"
         }
