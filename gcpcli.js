@@ -2,19 +2,13 @@ const util = require("util");
 const childProcess = require("child_process");
 const { docker } = require("@kaholo/plugin-library");
 const { assertPathExistence } = require("./helpers");
+const {
+  DOCKER_COMMAND,
+  DOCKER_IMAGE,
+  AUTH_COMMAND,
+} = require("./consts.json");
 
 const exec = util.promisify(childProcess.exec);
-
-const DOCKER_COMMAND = "bash -c \"$AUTH_COMMAND && $SANITIZED_COMMAND\"";
-const DOCKER_IMAGE = "google/cloud-sdk";
-// eslint-disable-next-line no-multi-str
-const AUTH_COMMAND = "\
-export AUTH_FILE=$(mktemp) &&\
-mv $AUTH_FILE $AUTH_FILE.json &&\
-echo $GCP_CREDENTIALS > $AUTH_FILE.json &&\
-gcloud auth activate-service-account --key-file=$AUTH_FILE.json;\
-rm $AUTH_FILE.json &&\
-unset AUTH_FILE";
 
 async function execute({
   credentials,
@@ -23,18 +17,17 @@ async function execute({
   cliTool,
   additionalFlags = "",
 }) {
-  const volumeConfigs = [];
-  let workingDirectoryVolumeConfig;
+  const volumeConfigsMap = new Map();
   if (workingDirectory) {
     await assertPathExistence(workingDirectory);
-    workingDirectoryVolumeConfig = docker.createVolumeConfig(workingDirectory);
-    volumeConfigs.push(workingDirectoryVolumeConfig);
+    volumeConfigsMap.set("workingDirectory", docker.createVolumeConfig(workingDirectory));
   }
 
+  const volumeConfigsArray = [...volumeConfigsMap.values()];
   const {
     environmentVariablesRequiredByDocker,
     environmentVariablesRequiredByShell,
-  } = docker.extractEnvironmentVariablesFromVolumeConfigs(volumeConfigs);
+  } = docker.extractEnvironmentVariablesFromVolumeConfigs(volumeConfigsArray);
 
   const environmentVariables = [
     "GCP_CREDENTIALS",
@@ -46,13 +39,13 @@ async function execute({
     command: DOCKER_COMMAND,
     image: DOCKER_IMAGE,
     environmentVariables,
-    volumeConfigs,
+    volumeConfigs: volumeConfigsArray,
   };
-  if (workingDirectoryVolumeConfig) {
-    dockerCommandBuildOptions.workingDirectory = workingDirectoryVolumeConfig.mountPoint.value;
+  if (volumeConfigsMap.has("workingDirectory")) {
+    dockerCommandBuildOptions.workingDirectory = volumeConfigsArray.get("workingDirectory").mountPoint.value;
   }
 
-  const gcloudCommand = `${command} ${additionalFlags}`;
+  const gcloudCommand = `${command} ${additionalFlags}`.trim();
   const dockerCommand = docker.buildDockerCommand(dockerCommandBuildOptions);
 
   return exec(dockerCommand, {
