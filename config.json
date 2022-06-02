@@ -39,14 +39,6 @@
           "learnUrl": "https://cloud.google.com/docs/authentication/production"
         },
         {
-          "name": "project",
-          "viewName": "Project",
-          "type": "string",
-          "description": "ID of the project that the command should refer to.",
-          "placeholder": "my-project-123456",
-          "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
-        },
-        {
           "name": "workingDirectory",
           "viewName": "Working Directory",
           "type": "string",
@@ -75,14 +67,6 @@
           "type": "vault",
           "description": "Default service account credentials",
           "learnUrl": "https://cloud.google.com/docs/authentication/production"
-        },
-        {
-          "name": "project",
-          "viewName": "Project",
-          "type": "string",
-          "description": "ID of the project that the command should refer to.",
-          "placeholder": "my-project-123456",
-          "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
         },
         {
           "name": "workingDirectory",
