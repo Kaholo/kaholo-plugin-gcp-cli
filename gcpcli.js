@@ -42,7 +42,7 @@ async function execute({
     volumeConfigs: volumeConfigsArray,
   };
   if (volumeConfigsMap.has("workingDirectory")) {
-    dockerCommandBuildOptions.workingDirectory = volumeConfigsArray.get("workingDirectory").mountPoint.value;
+    dockerCommandBuildOptions.workingDirectory = volumeConfigsMap.get("workingDirectory").mountPoint.value;
   }
 
   const gcloudCommand = `${command} ${additionalFlags}`.trim();
