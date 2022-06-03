@@ -8,7 +8,7 @@
   "version": "0.2.0",
   "description": "Kaholo plugin GCP CLI (gcloud)",
   "category": "GCP",
-  "keywords": ["GCP", "compute", "google", "platform", "vm", "instance", "cloud", "cluster", "project", "infra", "infrastructure", "cli", "network", "subnetwork", "firewall", "IP", "route", "gcloud"],
+  "keywords": ["GCP", "compute", "google", "platform", "vm", "instance", "cloud", "cluster", "project", "infrastructure", "cli", "network", "subnetwork", "firewall", "IP", "route", "gcloud", "gsutil", "bucket"],
   "settings": [
     {
       "name": "credentials",
@@ -35,14 +35,14 @@
           "name": "credentials",
           "viewName": "Service Account Credentials",
           "type": "vault",
-          "description": "Default service account credentials",
+          "description": "GCP service account credentials as JSON document",
           "learnUrl": "https://cloud.google.com/docs/authentication/production"
         },
         {
           "name": "project",
           "viewName": "Project",
           "type": "string",
-          "description": "ID of the project that the command should refer to.",
+          "description": "ID of the GCP Project, determines the command scope for some commands",
           "placeholder": "my-project-123456",
           "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
         },
@@ -51,9 +51,8 @@
           "viewName": "Working Directory",
           "type": "string",
           "required": false,
-          "description": "Location (on agent) of any input/output files used in commands",
-          "placeholder": "/home/gcloud",
-          "learnUrl": "https://cloud.google.com/resource-manager/docs/creating-managing-projects"
+          "description": "Directory on Kaholo agent where input/output files are or will be located",
+          "placeholder": "/home/gcloud"
         },
         {
           "name": "command",
