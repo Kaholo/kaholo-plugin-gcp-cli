@@ -6,6 +6,7 @@ const {
   DOCKER_COMMAND,
   DOCKER_IMAGE,
   AUTH_COMMAND,
+  SET_DEFAULT_PROJECT_COMMAND,
 } = require("./consts.json");
 
 const exec = util.promisify(childProcess.exec);
@@ -14,8 +15,8 @@ async function execute({
   credentials,
   command,
   workingDirectory,
-  cliTool,
-  additionalFlags = "",
+  project,
+  additionalArguments,
 }) {
   const volumeConfigsMap = new Map();
   if (workingDirectory) {
@@ -33,6 +34,7 @@ async function execute({
     "GCP_CREDENTIALS",
     "AUTH_COMMAND",
     "SANITIZED_COMMAND",
+    "PROJECT_ID",
     ...Object.keys(environmentVariablesRequiredByDocker),
   ];
   const dockerCommandBuildOptions = {
@@ -45,17 +47,44 @@ async function execute({
     dockerCommandBuildOptions.workingDirectory = volumeConfigsMap.get("workingDirectory").mountPoint.value;
   }
 
-  const gcloudCommand = `${command} ${additionalFlags}`.trim();
+  const cliTool = command.startsWith("gsutil ") ? "gsutil" : "gcloud";
+  const gcloudCommand = buildGcloudCommand({
+    command,
+    project,
+    cliTool,
+    additionalArguments,
+  });
   const dockerCommand = docker.buildDockerCommand(dockerCommandBuildOptions);
 
   return exec(dockerCommand, {
     env: {
       AUTH_COMMAND,
       GCP_CREDENTIALS: credentials,
-      SANITIZED_COMMAND: docker.sanitizeCommand(gcloudCommand, cliTool),
+      SANITIZED_COMMAND: gcloudCommand,
+      PROJECT_ID: project,
       ...environmentVariablesRequiredByShell,
     },
   });
+}
+
+function buildGcloudCommand({
+  command,
+  additionalArguments = [],
+  project,
+  cliTool,
+}) {
+  const commandArguments = [command, ...additionalArguments];
+
+  if (cliTool === "gcloud") {
+    commandArguments.push("--format", "json");
+  }
+
+  let sanitizedCommand = docker.sanitizeCommand(commandArguments.join(" "), cliTool);
+  if (project) {
+    sanitizedCommand = `${SET_DEFAULT_PROJECT_COMMAND} ${sanitizedCommand}`;
+  }
+
+  return sanitizedCommand;
 }
 
 module.exports = {
