@@ -81,7 +81,7 @@ function buildGcloudCommand({
 
   let sanitizedCommand = docker.sanitizeCommand(commandArguments.join(" "), cliTool);
   if (project) {
-    sanitizedCommand = `${SET_DEFAULT_PROJECT_COMMAND} ${sanitizedCommand}`;
+    sanitizedCommand = `${SET_DEFAULT_PROJECT_COMMAND} && ${sanitizedCommand}`;
   }
 
   return sanitizedCommand;

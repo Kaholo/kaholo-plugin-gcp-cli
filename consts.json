@@ -2,5 +2,5 @@
   "DOCKER_IMAGE": "google/cloud-sdk",
   "DOCKER_COMMAND": "bash -c \"$AUTH_COMMAND && $SANITIZED_COMMAND\"",
   "AUTH_COMMAND": "export AUTH_FILE=$(mktemp) && mv $AUTH_FILE $AUTH_FILE.json && echo $GCP_CREDENTIALS > $AUTH_FILE.json && gcloud auth activate-service-account --key-file=$AUTH_FILE.json; rm $AUTH_FILE.json && unset AUTH_FILE",
-  "SET_DEFAULT_PROJECT_COMMAND": "gcloud config set project $PROJECT_ID &&"
+  "SET_DEFAULT_PROJECT_COMMAND": "gcloud config set project $PROJECT_ID"
 }
