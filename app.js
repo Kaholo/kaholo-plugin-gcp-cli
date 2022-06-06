@@ -1,18 +1,9 @@
-const kaholo = require("kaholo-plugin-library");
+const kaholo = require("@kaholo/plugin-library");
 const gcpCli = require("./gcpcli");
 
 async function runCommand(parameters) {
-  let additionalFlags = "--format=json ";
-  if (parameters.project) {
-    additionalFlags += `--project=${parameters.project} `;
-  }
-
   try {
-    const result = await gcpCli.execute(
-      parameters.credentials,
-      parameters.command,
-      additionalFlags,
-    );
+    const result = await gcpCli.execute(parameters);
     return result.stdout;
   } catch (error) {
     throw new Error(error.stderr ?? error);
@@ -21,4 +12,4 @@ async function runCommand(parameters) {
 
 module.exports = kaholo.bootstrap({
   runCommand,
-}, {});
+});
