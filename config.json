@@ -5,18 +5,23 @@
   "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Kaholo plugin GCP CLI (gcloud)",
   "category": "Cloud Management",
   "keywords": ["GCP", "compute", "google", "platform", "vm", "instance", "cloud", "cluster", "project", "infrastructure", "cli", "network", "subnetwork", "firewall", "IP", "route", "gcloud", "gsutil", "bucket"],
+  "auth": {
+    "authId": "gcpAccount",
+    "params": [
+      {
+        "name": "credentials",
+        "viewName": "Default Service Account Credentials",
+        "type": "vault",
+        "description": "GCP service account credentials (JSON) to use by default",
+        "learnUrl": "https://cloud.google.com/docs/authentication/production"
+      }
+    ]
+  },
   "settings": [
-    {
-      "name": "credentials",
-      "viewName": "Default Service Account Credentials",
-      "type": "vault",
-      "description": "GCP service account credentials (JSON) to use by default",
-      "learnUrl": "https://cloud.google.com/docs/authentication/production"
-    },
     {
       "name": "project",
       "viewName": "Default Project",
@@ -31,13 +36,6 @@
       "name": "runCommand",
       "viewName": "Run Command",
       "params": [
-        {
-          "name": "credentials",
-          "viewName": "Service Account Credentials",
-          "type": "vault",
-          "description": "GCP service account credentials as JSON document",
-          "learnUrl": "https://cloud.google.com/docs/authentication/production"
-        },
         {
           "name": "project",
           "viewName": "Project",
