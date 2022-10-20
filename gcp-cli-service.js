@@ -17,17 +17,14 @@ const exec = util.promisify(childProcess.exec);
 async function execute(params) {
   const {
     credentials,
-    command,
+    command: commands,
     workingDirectory,
     project,
-    additionalArguments,
   } = params;
 
   const gcloudCommand = buildGcloudCommand({
-    cliTool: command.startsWith("gsutil ") ? "gsutil" : "gcloud",
-    command,
+    commands,
     project,
-    additionalArguments,
   });
   const environmentVariables = {
     GCP_CREDENTIALS: credentials,
@@ -75,23 +72,28 @@ async function execute(params) {
 }
 
 function buildGcloudCommand({
-  command,
-  additionalArguments = [],
+  commands: gcpCommands = [],
   project,
-  cliTool,
 }) {
-  const commandArguments = [command, ...additionalArguments];
+  const commands = [];
 
-  if (cliTool === "gcloud") {
-    commandArguments.push("--format", "json");
-  }
-
-  let sanitizedCommand = docker.sanitizeCommand(commandArguments.join(" "), cliTool);
   if (project) {
-    sanitizedCommand = `${SET_DEFAULT_PROJECT_COMMAND} && ${sanitizedCommand}`;
+    commands.push(SET_DEFAULT_PROJECT_COMMAND);
   }
 
-  return sanitizedCommand;
+  gcpCommands.forEach((rawCommand) => {
+    const cliTool = rawCommand.startsWith("gsutil ") ? "gsutil" : "gcloud";
+    let resolvedCommand = rawCommand.replace(/;$/g, "");
+
+    if (cliTool === "gcloud" && !/--format/.test(rawCommand)) {
+      resolvedCommand += " --format json";
+    }
+
+    resolvedCommand = docker.sanitizeCommand(resolvedCommand, cliTool);
+    commands.push(resolvedCommand);
+  });
+
+  return commands.join("; ");
 }
 
 module.exports = {
