@@ -45,12 +45,8 @@ async function execute(params) {
     const volumeDefinition = docker.createVolumeDefinition(absoluteWorkingDir);
 
     buildDockerCommandOptions.volumeDefinitionsArray.push(volumeDefinition);
-    environmentVariables[volumeDefinition.mountPoint.name] = (
-      environmentVariables[volumeDefinition.mountPoint.value]
-    );
-    environmentVariables[volumeDefinition.path.name] = (
-      environmentVariables[volumeDefinition.path.value]
-    );
+    environmentVariables[volumeDefinition.mountPoint.name] = volumeDefinition.mountPoint.value;
+    environmentVariables[volumeDefinition.path.name] = volumeDefinition.path.value;
     buildDockerCommandOptions.workingDirectory = `$${volumeDefinition.mountPoint.name}`;
   }
 
