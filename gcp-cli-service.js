@@ -56,11 +56,11 @@ async function execute(params) {
   try {
     result = await exec(dockerCommand, { env: environmentVariables });
   } catch (error) {
-    console.error(`caught this: ${JSON.stringify(error)}`);
     throw new Error(error.stderr ?? error);
   }
 
-  // It's not unusual for GCP CLI to provide result with stderr and empty string stdout, e.g. "gsutil cp" does this.
+  // It's not unusual for GCP CLI to provide result with stderr 
+  // and empty string stdout, e.g. "gsutil cp" does this.
   if (result.stderr) {
     console.error(result.stderr);
   }
