@@ -59,7 +59,7 @@ async function execute(params) {
     throw new Error(error.stderr ?? error);
   }
 
-  // It's not unusual for GCP CLI to provide result with stderr 
+  // It's not unusual for GCP CLI to provide result with stderr
   // and empty string stdout, e.g. "gsutil cp" does this.
   if (result.stderr) {
     console.error(result.stderr);
