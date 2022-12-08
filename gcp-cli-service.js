@@ -69,9 +69,12 @@ async function execute(params) {
     console.error(result.stderr);
   }
 
-  const commandOutputs = result.stdout.split(COMMAND_OUTPUT_SEPARATOR);
+  const commandOutputs = result.stdout.split(COMMAND_OUTPUT_SEPARATOR).map(tryParseJson);
 
-  return commandOutputs.map(tryParseJson);
+  if (commandOutputs.length === 1) {
+    return commandOutputs[0];
+  }
+  return commandOutputs;
 }
 
 function buildGcloudCommand({
