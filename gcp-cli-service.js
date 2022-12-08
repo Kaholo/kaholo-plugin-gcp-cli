@@ -1,9 +1,13 @@
 const util = require("util");
 const childProcess = require("child_process");
 const path = require("path");
+const randomString = require("randomstring");
 const { docker } = require("@kaholo/plugin-library");
 
-const { assertPathExistence } = require("./helpers");
+const {
+  assertPathExistence,
+  tryParseJson,
+} = require("./helpers");
 
 const {
   DOCKER_COMMAND,
@@ -13,6 +17,8 @@ const {
 } = require("./consts.json");
 
 const exec = util.promisify(childProcess.exec);
+
+const COMMAND_OUTPUT_SEPARATOR = `%COMMAND_OUTPUT_SEPARATOR_${randomString.generate(128)}%`;
 
 async function execute(params) {
   const {
@@ -62,32 +68,28 @@ async function execute(params) {
   if (result.stderr) {
     console.error(result.stderr);
   }
-  return result.stdout;
+
+  const commandOutputs = result.stdout.split(COMMAND_OUTPUT_SEPARATOR);
+
+  return commandOutputs.map(tryParseJson);
 }
 
 function buildGcloudCommand({
   commands: gcpCommands = [],
   project,
 }) {
-  const commands = [];
-
-  if (project) {
-    commands.push(SET_DEFAULT_PROJECT_COMMAND);
-  }
-
-  gcpCommands.forEach((rawCommand) => {
+  const commands = gcpCommands.map((rawCommand) => {
     const cliTool = rawCommand.startsWith("gsutil ") ? "gsutil" : "gcloud";
-    let resolvedCommand = rawCommand.replace(/;$/g, "");
 
-    if (cliTool === "gcloud" && !/--format/.test(rawCommand)) {
-      resolvedCommand += " --format json";
-    }
-
-    resolvedCommand = docker.sanitizeCommand(resolvedCommand, cliTool);
-    commands.push(resolvedCommand);
+    return docker.sanitizeCommand(rawCommand.replace(/;$/g, ""), cliTool);
   });
 
-  return commands.join("; ");
+  const userCommandsJoined = commands.join(`; echo -n ${JSON.stringify(COMMAND_OUTPUT_SEPARATOR)};`);
+
+  if (project) {
+    return `${SET_DEFAULT_PROJECT_COMMAND}; ${userCommandsJoined}`;
+  }
+  return userCommandsJoined;
 }
 
 module.exports = {
