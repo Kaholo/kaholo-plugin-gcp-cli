@@ -7,6 +7,15 @@ const assertPathExistence = (path) => (
   })
 );
 
+function tryParseJson(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
+  }
+}
+
 module.exports = {
   assertPathExistence,
+  tryParseJson,
 };

@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@kaholo/plugin-library": "^2.1.2",
-    "lodash": "4.17.21"
+    "lodash": "4.17.21",
+    "randomstring": "^1.2.3"
   }
 }
