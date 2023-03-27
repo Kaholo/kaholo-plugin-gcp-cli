@@ -33,7 +33,7 @@ async function execute(params) {
     project,
   });
   const environmentVariables = {
-    GCP_CREDENTIALS: credentials,
+    GCP_CREDENTIALS: `${credentials}\n`,
     PROJECT_ID: project,
     AUTH_COMMAND,
     SANITIZED_COMMAND: gcloudCommand,
