@@ -25,7 +25,7 @@
     "jest": "27.5.0"
   },
   "dependencies": {
-    "@kaholo/plugin-library": "^2.1.2",
+    "@kaholo/plugin-library": "^2.3.1",
     "lodash": "4.17.21",
     "randomstring": "^1.2.3"
   }
