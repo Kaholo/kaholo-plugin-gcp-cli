@@ -5,18 +5,38 @@
   "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "0.3.0",
-  "description": "Kaholo plugin GCP CLI (gcloud)",
+  "version": "1.1.0",
+  "description": "A CLI to create and manage Google Cloud resources",
   "category": "Cloud Management",
-  "keywords": ["GCP", "compute", "google", "platform", "vm", "instance", "cloud", "cluster", "project", "infrastructure", "cli", "network", "subnetwork", "firewall", "IP", "route", "gcloud", "gsutil", "bucket"],
+  "keywords": [
+    "GCP",
+    "compute",
+    "google",
+    "platform",
+    "vm",
+    "instance",
+    "cloud",
+    "cluster",
+    "project",
+    "infrastructure",
+    "cli",
+    "network",
+    "subnetwork",
+    "firewall",
+    "IP",
+    "route",
+    "gcloud",
+    "gsutil",
+    "bucket"
+  ],
   "auth": {
     "authId": "gcpAccount",
     "params": [
       {
         "name": "credentials",
-        "viewName": "Default Service Account Credentials",
+        "viewName": "GCP Service Account Credentials",
         "type": "vault",
-        "description": "GCP service account credentials (JSON) to use by default",
+        "description": "Vault item containing credentials as provided by Google Cloud in JSON format",
         "learnUrl": "https://cloud.google.com/docs/authentication/production"
       }
     ]
@@ -24,7 +44,7 @@
   "settings": [
     {
       "name": "project",
-      "viewName": "Default Project",
+      "viewName": "Default Project ID",
       "type": "string",
       "description": "GCP project ID to use by default",
       "placeholder": "my-project-123456",
@@ -55,8 +75,9 @@
         {
           "name": "command",
           "viewName": "Command",
-          "type": "string",
-          "description": "GCP CLI command to run",
+          "type": "text",
+          "description": "GCP CLI command(s) to run, one per line.",
+          "parserType": "array",
           "placeholder": "gcloud projects list",
           "learnUrl": "https://cloud.google.com/sdk/gcloud/reference/topic/gcloud"
         }

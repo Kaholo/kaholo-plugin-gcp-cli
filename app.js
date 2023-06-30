@@ -1,15 +1,6 @@
 const kaholo = require("@kaholo/plugin-library");
-const gcpCli = require("./gcpcli");
-
-async function runCommand(parameters) {
-  try {
-    const result = await gcpCli.execute(parameters);
-    return result.stdout;
-  } catch (error) {
-    throw new Error(error.stderr ?? error);
-  }
-}
+const gcpCli = require("./gcp-cli-service");
 
 module.exports = kaholo.bootstrap({
-  runCommand,
+  runCommand: gcpCli.execute,
 });
