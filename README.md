@@ -73,6 +73,8 @@ Store the JSON credentials in a Kaholo Vault item, and then create an account in
 ## Method: Run Command
 This method runs any gcloud CLI command. While these commands all being with `gcloud`, in this plugin you may omit that first word if you wish. For example the command `compute instances list` will be interpreted the same as `gcloud compute instances list`. If you intend to run a `gsutil` command, you must start the command with `gsutil`.
 
+Kaholo displays JSON results nicely and also makes them accessible on the code layer as objects. For example if an GCP CLI Action has the ID `gcpcli1` and the command is `gcloud projects list --format="json"`, then the name of the first project is accessible in code by downstream actions as `kaholo.actions.gcpcli1.result[0].name`, and its project number is `kaholo.actions.gcpcli1.result[0].projectNumber`. For this reason, commands using `--format="json"` can be especially useful in advanced pipelining.
+
 ### Parameters
 Beyond the two discussed above in the [Access and Authentication](#Access-and-Authentication) section, only the command itself is required.
 
