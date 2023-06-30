@@ -44,14 +44,31 @@ GCP also organizes resources into named projects. The Project determines which a
 For download, installation, upgrade, downgrade and troubleshooting of plugins in general, see [INSTALL.md](./INSTALL.md).
 
 ## Plugin Settings
-Plugin settings act as default parameter values. If configured in plugin settings, the action parameters may be left unconfigured. Action parameters configured anyway over-ride the plugin-level settings for that Action.
+Plugin Settings and Accounts are accessed at Settings | Plugins by clicking on the blue name of the plugin "GCP CLI", which is a link to the settings and accounts for this specific plugin.
 
-The settings for gcloud CLI Plugin include the two discussed above in the [Access and Authentication](#Access-and-Authentication) section.
+Plugin settings act as default parameter values. If configured in plugin settings, the parameters of newly created actions will be configured the same by default, as a convenience. Action parameters can then be reconfigured or cleared in cases where the default setting is not appropriate.
 
-* Default Service Account Credentials
-* Default Project
+There is only one setting for gcloud CLI Plugin
 
-These are also required parameters for most methods of this plugin. (Some gcloud commands do work without specifying Project, so it is not necessarily a required parameter.)
+* Default Project ID
+
+## Plugin Account
+Plugin Accounts are used for unique sets of configuration applicable to a plugin, usually including credentials. In the case of GCP CLI Plugin, the GCP account credentials are already self-contained in a JSON document, like in this example:
+
+    {
+    "type": "service_account",
+    "project_id": "my-gcp-project-253sd",
+    "private_key_id": "a76cd5324c8dd346342306656154cac43641b780",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvA...very long...q2Zkp+vg==\n-----END PRIVATE KEY-----\n",
+    "client_email": "plugins-helm-alpha-one@plugins-helm-alpha.iam.gserviceaccount.com",
+    "client_id": "109210422390046424389",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/plugins-helm-alpha-one%40plugins-helm-alpha.iam.gserviceaccount.com"
+    }
+
+Store the JSON credentials in a Kaholo Vault item, and then create an account in Plugin Settings that provides the vault item as the GCP Service Account Credentials. Create as many accounts as needed if using more than one set of credentials.
 
 ## Method: Run Command
 This method runs any gcloud CLI command. While these commands all being with `gcloud`, in this plugin you may omit that first word if you wish. For example the command `compute instances list` will be interpreted the same as `gcloud compute instances list`. If you intend to run a `gsutil` command, you must start the command with `gsutil`.
